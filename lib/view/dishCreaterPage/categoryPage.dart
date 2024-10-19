@@ -1,7 +1,11 @@
 import 'package:dish_creator/resource/textResources.dart';
+import 'package:dish_creator/view/dishCreaterPage/genrePage.dart';
 import 'package:flutter/material.dart';
 
 class CategoryPage extends StatefulWidget {
+  final Function(List<String>) onNext;
+  CategoryPage({required this.onNext});
+
   @override
   _CategoryPageState createState() => _CategoryPageState();
 }
@@ -14,6 +18,9 @@ class _CategoryPageState extends State<CategoryPage> {
     {'icon': Icons.local_cafe, 'text': TextResources.soup},
     {'icon': Icons.cake, 'text': TextResources.dessert},
   ];
+
+  // エラーメッセージ表示(true)/非表示(false)
+  bool _isErrorVisible = false;
 
   // タップされた要素を保存するリスト
   List<String> selectedItems = [];
@@ -30,6 +37,13 @@ class _CategoryPageState extends State<CategoryPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(TextResources.categoryDescText),
+            Visibility(
+              child: Text(
+                TextResources.categoryErrorMessage,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+              visible: _isErrorVisible,
+            ),
             SizedBox(height: 16),
             Expanded(
               child: GridView.builder(
@@ -96,7 +110,19 @@ class _CategoryPageState extends State<CategoryPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          // カテゴリー選択されている場合
+          if (selectedItems.isNotEmpty) {
+            // ジャンル選択画面表示
+            widget.onNext(selectedItems);
+            // カテゴリー選択されていない場合
+          } else {
+            setState(() {
+              // エラーメッセージ表示
+              _isErrorVisible = true;
+            });
+          }
+        },
         label: Row(
           children: [
             Text(TextResources.genrePageBtn),

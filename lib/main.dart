@@ -1,6 +1,7 @@
 import 'package:dish_creator/resource/textResources.dart';
 import 'package:dish_creator/view/accountPage.dart';
 import 'package:dish_creator/view/dishCreatePage.dart';
+import 'package:dish_creator/view/dishCreaterPage/genrePage.dart';
 import 'package:dish_creator/view/shoppingListPage.dart';
 import 'package:flutter/material.dart';
 
@@ -46,13 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // BottomNavigationBarで選択中のアイテムindex
   int _currentIndex = 0;
 
-  // 画面ごとのAppBarタイトル
-  final List<String> _appBarTitles = [
-    TextResources.shoppingListPageTitle,
-    TextResources.dishCreatePageTitle,
-    TextResources.accountPageTitle
-  ];
-
   // 画面ごとのwidget
   final List<Widget> _pages = [
     ShoppingListPage(),
@@ -63,10 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.onSecondary,
-        title: Text(_appBarTitles[_currentIndex]),
-      ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
