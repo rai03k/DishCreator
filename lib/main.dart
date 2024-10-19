@@ -16,16 +16,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        scaffoldBackgroundColor: Color(0xFFf5f5f5),
         colorScheme: const ColorScheme(
-            brightness: Brightness.light,
-            primary: Color(0xFF19ac19),
-            onPrimary: Colors.white,
-            secondary: Color(0xFFff0068),
-            onSecondary: Colors.white,
-            error: Colors.red,
-            onError: Colors.transparent,
-            surface: Colors.white,
-            onSurface: Colors.black
+          brightness: Brightness.light,
+          primary: Color(0xFF19ac19),
+          onPrimary: Colors.white,
+          secondary: Color(0xFFff0068),
+          onSecondary: Colors.white,
+          error: Colors.red,
+          onError: Colors.transparent,
+          surface: Colors.white,
+          onSurface: Colors.black,
         ),
         useMaterial3: true,
       ),
@@ -75,10 +76,15 @@ class _MyHomePageState extends State<MyHomePage> {
           _currentIndex = selectedIndex;
         }),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), label: TextResources.shoppingListPageTitle),
           BottomNavigationBarItem(
-              icon: Icon(Icons.restaurant), label: TextResources.dishCreatePageTitle),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outlined), label: TextResources.accountPageTitle),
+              icon: Icon(Icons.shopping_bag_outlined),
+              label: TextResources.shoppingListPageTitle),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.restaurant),
+              label: TextResources.dishCreatePageTitle),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outlined),
+              label: TextResources.accountPageTitle),
         ],
       ),
     );
