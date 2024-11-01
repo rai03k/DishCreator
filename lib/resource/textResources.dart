@@ -15,9 +15,14 @@ class TextResources {
 
   // ジャンル選択画面
   static const genreDescText = "作りたい料理のジャンルを選択してください";
+  static const genreErrorMessage = "ジャンルが未選択です";
   static const japaneseCuisine = "和食";
   static const westernCuisine = "洋食";
   static const chineseCuisine = "中華料理";
   static const koreanCuisine = "韓国料理";
   static const ingredientPageBtn = "食材選択";
+
+  // 食材選択画面
+  static const List<String> tabs = ["すべて", "野菜・果実", "水産品", "畜産品", "穀物", "加工品"];
+  static const dishCreatePageBtn = "料理検索";
 }
