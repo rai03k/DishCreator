@@ -3,8 +3,7 @@ import 'package:dish_creator/view/dishCreaterPage/genrePage.dart';
 import 'package:flutter/material.dart';
 
 class CategoryPage extends StatefulWidget {
-  final Function(List<String>) onNext;
-  CategoryPage({required this.onNext});
+  const CategoryPage({super.key});
 
   @override
   _CategoryPageState createState() => _CategoryPageState();
@@ -31,6 +30,10 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        title: Text(TextResources.dishCreatePageTitle),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -46,64 +49,67 @@ class _CategoryPageState extends State<CategoryPage> {
             ),
             SizedBox(height: 16),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2列
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        // タップ時に色を変更し、選択された文字列を配列に保存
-                        isSelected[index] = !isSelected[index];
+              child: GridView.count(
+                crossAxisCount: 2, // 2列
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                physics: NeverScrollableScrollPhysics(), // スクロール不可
+                children: List.generate(
+                  categories.length,
+                  (index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          // タップ時に色を変更し、選択された文字列を配列に保存
+                          isSelected[index] = !isSelected[index];
 
-                        if (isSelected[index]) {
-                          selectedItems.add(categories[index]['text']);
-                        } else {
-                          selectedItems.remove(categories[index]['text']);
-                        }
-                      });
-                      print(selectedItems); // 選択された項目を表示
-                    },
-                    child: Card(
-                      color: isSelected[index]
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              categories[index]['icon'],
-                              size: 48,
-                              color: isSelected[index]
-                                  ? Theme.of(context).colorScheme.onPrimary
-                                  : Theme.of(context).colorScheme.primary,
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              categories[index]['text'],
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: isSelected[index]
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onSurface),
-                            ),
-                          ],
+                          if (isSelected[index]) {
+                            selectedItems.add(categories[index]['text']);
+                          } else {
+                            selectedItems.remove(categories[index]['text']);
+                          }
+                        });
+                        print(selectedItems); // 選択された項目を表示
+                      },
+                      child: Card(
+                        color: isSelected[index]
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                categories[index]['icon'],
+                                size: 48,
+                                color: isSelected[index]
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.primary,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                categories[index]['text'],
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: isSelected[index]
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSurface),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -114,7 +120,16 @@ class _CategoryPageState extends State<CategoryPage> {
           // カテゴリー選択されている場合
           if (selectedItems.isNotEmpty) {
             // ジャンル選択画面表示
-            widget.onNext(selectedItems);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GenrePage(categoryList: selectedItems),
+              ),
+            );
+
+            setState(() {
+              _isErrorVisible = false;
+            });
             // カテゴリー選択されていない場合
           } else {
             setState(() {

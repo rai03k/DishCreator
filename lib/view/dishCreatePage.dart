@@ -1,9 +1,8 @@
-import 'package:dish_creator/resource/textResources.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:dish_creator/view/dishCreaterPage/categoryPage.dart';
-import 'package:dish_creator/view/dishCreaterPage/genrePage.dart';
-import 'package:dish_creator/view/dishCreaterPage/ingredientPage.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class DishCreaterPage extends StatefulWidget {
   const DishCreaterPage({super.key});
 
@@ -45,26 +44,6 @@ class _DishCreatePageState extends State<DishCreaterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(TextResources.dishCreatePageTitle),
-          leading: _isGenrePage
-              ? IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: _isIngredientPage
-                      ? _goBackToGenrePage
-                      : _goBackToCategoryPage,
-                )
-              : null,
-        ),
-        body: _isIngredientPage
-            ? IngredientPage(onBack: _goBackToGenrePage)
-            : _isGenrePage
-                ? GenrePage(
-                    onNext: _goToIngredientPage,
-                    onBack: _goBackToCategoryPage,
-                    categoryList: _selectedCategories,
-                  )
-                : CategoryPage(onNext: _goToGenrePage));
+    return CategoryPage();
   }
 }

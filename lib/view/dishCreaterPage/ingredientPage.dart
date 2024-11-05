@@ -3,8 +3,7 @@ import 'package:dish_creator/resource/textResources.dart';
 import 'package:flutter/material.dart';
 
 class IngredientPage extends StatefulWidget {
-  final Function onBack;
-  IngredientPage({super.key, required this.onBack});
+  IngredientPage({super.key});
 
   @override
   _IngredientPageState createState() => _IngredientPageState();
@@ -36,6 +35,10 @@ class _IngredientPageState extends State<IngredientPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        title: Text(TextResources.dishCreatePageTitle),
+      ),
       body: DefaultTabController(
         length: TextResources.tabs.length,
         child: Column(

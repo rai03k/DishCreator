@@ -1,13 +1,11 @@
 import 'package:dish_creator/resource/textResources.dart';
+import 'package:dish_creator/view/dishCreaterPage/ingredientPage.dart';
 import 'package:flutter/material.dart';
 
 class GenrePage extends StatefulWidget {
-  final Function(List<String>) onNext;
-  final VoidCallback onBack;
   final List<String> categoryList;
 
-  GenrePage(
-      {required this.onNext, required this.onBack, required this.categoryList});
+  GenrePage({required this.categoryList});
 
   @override
   _GenrePageState createState() => _GenrePageState();
@@ -42,6 +40,10 @@ class _GenrePageState extends State<GenrePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        title: Text(TextResources.dishCreatePageTitle),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -57,51 +59,54 @@ class _GenrePageState extends State<GenrePage> {
             ),
             SizedBox(height: 16),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2列
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: genres.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        // タップ時に色を変更し、選択された文字列を配列に保存
-                        isSelected[index] = !isSelected[index];
+              child: GridView.count(
+                crossAxisCount: 2, // 2列
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                physics: NeverScrollableScrollPhysics(), // スクロール不可
+                children: List.generate(
+                  genres.length,
+                  (index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          // タップ時に色を変更し、選択された文字列を配列に保存
+                          isSelected[index] = !isSelected[index];
 
-                        if (isSelected[index]) {
-                          selectedItems.add(genres[index]);
-                        } else {
-                          selectedItems.remove(genres[index]);
-                        }
-                      });
-                      print(selectedItems); // 選択された項目を表示
-                    },
-                    child: Card(
-                      color: isSelected[index]
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Center(
-                          child: Text(
-                            genres[index],
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: isSelected[index]
-                                    ? Theme.of(context).colorScheme.onPrimary
-                                    : Theme.of(context).colorScheme.onSurface),
+                          if (isSelected[index]) {
+                            selectedItems.add(genres[index]);
+                          } else {
+                            selectedItems.remove(genres[index]);
+                          }
+                        });
+                        print(selectedItems); // 選択された項目を表示
+                      },
+                      child: Card(
+                        color: isSelected[index]
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(
+                            child: Text(
+                              genres[index],
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: isSelected[index]
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -112,7 +117,16 @@ class _GenrePageState extends State<GenrePage> {
           // カテゴリー選択されている場合
           if (selectedItems.isNotEmpty) {
             // ジャンル選択画面表示
-            widget.onNext(selectedItems);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => IngredientPage(), // 遷移先のページ
+              ),
+            );
+
+            setState(() {
+              _isErrorVisible = false;
+            });
             // カテゴリー選択されていない場合
           } else {
             setState(() {

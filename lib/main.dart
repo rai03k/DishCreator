@@ -1,9 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dish_creator/resource/textResources.dart';
 import 'package:dish_creator/view/accountPage.dart';
 import 'package:dish_creator/view/dishCreatePage.dart';
+import 'package:dish_creator/view/dishCreaterPage/categoryPage.dart';
 import 'package:dish_creator/view/dishCreaterPage/genrePage.dart';
 import 'package:dish_creator/view/shoppingListPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,51 +34,97 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: _MyHomePageState(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+enum TabItem {
+  shoppingListPage(
+    title: '買い物リスト',
+    icon: Icons.shopping_cart_outlined,
+    page: ShoppingListPage(),
+  ),
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  dishCreatePage(
+    title: '献立作成',
+    icon: Icons.restaurant,
+    page: DishCreaterPage(),
+  ),
+
+  accountPage(
+    title: 'マイページ',
+    icon: Icons.person_outlined,
+    page: AccountPage(),
+  );
+
+  const TabItem({
+    required this.title,
+    required this.icon,
+    required this.page,
+  });
+
+  /// タイトル
+  final String title;
+
+  /// アイコン
+  final IconData icon;
+
+  /// 画面
+  final Widget page;
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  // BottomNavigationBarで選択中のアイテムindex
-  int _currentIndex = 0;
+final _navigatorKeys = <TabItem, GlobalKey<NavigatorState>>{
+  TabItem.shoppingListPage: GlobalKey<NavigatorState>(),
+  TabItem.dishCreatePage: GlobalKey<NavigatorState>(),
+  TabItem.accountPage: GlobalKey<NavigatorState>(),
+};
 
-  // 画面ごとのwidget
-  final List<Widget> _pages = [
-    ShoppingListPage(),
-    DishCreaterPage(),
-    AccountPage()
-  ];
-
+class _MyHomePageState extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final currentTab = useState(TabItem.shoppingListPage);
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: Stack(
+        children: TabItem.values
+            .map(
+              (tabItem) => Offstage(
+                offstage: currentTab.value != tabItem,
+                child: Navigator(
+                  key: _navigatorKeys[tabItem],
+                  onGenerateRoute: (settings) {
+                    return MaterialPageRoute<Widget>(
+                      builder: (context) => tabItem.page,
+                    );
+                  },
+                ),
+              ),
+            )
+            .toList(),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: TabItem.values.indexOf(currentTab.value),
         selectedFontSize: 12,
-        selectedItemColor: Theme.of(context).colorScheme.secondary,
-        onTap: (selectedIndex) => setState(() {
-          _currentIndex = selectedIndex;
-        }),
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_bag_outlined),
-              label: TextResources.shoppingListPageTitle),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.restaurant),
-              label: TextResources.dishCreatePageTitle),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outlined),
-              label: TextResources.accountPageTitle),
-        ],
+        items: TabItem.values
+            .map(
+              (tabItem) => BottomNavigationBarItem(
+                icon: Icon(tabItem.icon),
+                label: tabItem.title,
+              ),
+            )
+            .toList(),
+        onTap: (index) {
+          final selectedTab = TabItem.values[index];
+          if (currentTab.value == selectedTab) {
+            _navigatorKeys[selectedTab]
+                ?.currentState
+                ?.popUntil((route) => route.isFirst);
+          } else {
+            // 未選択
+            currentTab.value = selectedTab;
+          }
+        },
       ),
     );
   }
