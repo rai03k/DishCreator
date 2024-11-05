@@ -1,9 +1,7 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:dish_creator/resource/textResources.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-@RoutePage()
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
